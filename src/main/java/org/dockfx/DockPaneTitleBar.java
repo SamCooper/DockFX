@@ -96,6 +96,11 @@ public class DockPaneTitleBar extends DockTitleBar {
     }
 
     @Override
+    protected void handleMinimizeAction() {
+        dockPane.setMinimized(!dockPane.isMinimized());
+    }
+
+    @Override
     public void handle(MouseEvent event) {
         if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
             if (dockPane.isFloating() && event.getClickCount() == 2

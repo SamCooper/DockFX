@@ -88,6 +88,15 @@ public class DockNodeTitleBar extends DockTitleBar {
     }
 
     @Override
+    protected void handleMinimizeAction() {
+        if (dockNode.getDockPane().isFloating() && dockNode.getDockPane().isOnlyChild(dockNode)) {
+            dockNode.getDockPane().setMinimized(!dockNode.getDockPane().isMaximized());
+        } else {
+            dockNode.setFloating(true);
+        }
+    }
+
+    @Override
     protected Stage getStage() {
         return dockNode.getStage();
     }

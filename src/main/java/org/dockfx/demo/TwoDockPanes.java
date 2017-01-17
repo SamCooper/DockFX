@@ -1,26 +1,25 @@
 /**
  * @file DockFX.java
  * @brief Driver demonstrating basic dock layout with prototypes. Maintained in a separate package
- *        to ensure the encapsulation of org.dockfx private package members.
+ * to ensure the encapsulation of org.dockfx private package members.
  *
  * @section License
  *
- *          This file is a part of the DockFX Library. Copyright (C) 2015 Robert B. Colton
+ * This file is a part of the DockFX Library. Copyright (C) 2015 Robert B. Colton
  *
- *          This program is free software: you can redistribute it and/or modify it under the terms
- *          of the GNU Lesser General Public License as published by the Free Software Foundation,
- *          either version 3 of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
  *
- *          This program is distributed in the hope that it will be useful, but WITHOUT ANY
- *          WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- *          PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
- *          You should have received a copy of the GNU Lesser General Public License along with this
- *          program. If not, see <http://www.gnu.org/licenses/>.
- **/
-
+ * You should have received a copy of the GNU Lesser General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package org.dockfx.demo;
-
 
 import org.dockfx.DockPane;
 
@@ -39,75 +38,74 @@ import org.dockfx.DockNode;
 import org.dockfx.DockPos;
 
 /**
- * This app creates two dock panes, one over the other. Nodes can be added to either.
- * If dock pane A is "exclusive", then A will ignore nodes from B (because A is 
- * exclusive and won't accept nodes from any other dockpane, and B will ignore nodes
- * from A because A is exclusive and won't let go of them.
- * 
- * If neither A or B is exclusive, Issue #24 from RobertBColton/DockFX will occur. 
+ * This app creates two dock panes, one over the other. Nodes can be added to either. If dock pane A
+ * is "exclusive", then A will ignore nodes from B (because A is exclusive and won't accept nodes
+ * from any other dockpane, and B will ignore nodes from A because A is exclusive and won't let go
+ * of them.
+ *
+ * If neither A or B is exclusive, Issue #24 from RobertBColton/DockFX will occur.
+ *
  * @author will
  */
 public class TwoDockPanes extends Application {
 
-  public static void main(String[] args) {
-    launch(args);
-  }
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-  private VBox vbox;
-  private DockPane dp1;
-  private DockPane dp2;
-  private int counter = 0;
-  private final Image dockImage = 
-    new Image(DockFX.class.getResource("docknode.png").toExternalForm());
+    private VBox vbox;
+    private DockPane dp1;
+    private DockPane dp2;
+    private int counter = 0;
+    private final Image dockImage
+            = new Image(DockFX.class.getResource("docknode.png").toExternalForm());
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public void start(Stage primaryStage) {
-    primaryStage.setTitle("DockFX");
-   
-    vbox = new VBox();
+    @SuppressWarnings("unchecked")
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("DockFX");
 
-    dp1 = makeDockPane("A");
-    dp2 = makeDockPane("B");
+        vbox = new VBox();
 
-    dp1.setExclusive(true);
-    
+        dp1 = makeDockPane("A");
+        dp2 = makeDockPane("B");
 
-    primaryStage.setScene(new Scene(vbox, 800, 500));
-    primaryStage.sizeToScene();
-    primaryStage.show();
+        dp1.setExclusive(true);
 
-    // test the look and feel with both Caspian and Modena
-    Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
-    DockPane.initializeDefaultUserAgentStylesheet();
-  }
+        primaryStage.setScene(new Scene(vbox, 800, 500));
+        primaryStage.sizeToScene();
+        primaryStage.show();
 
-  private DockPane makeDockPane(String name) {
-    ToolBar bar = new ToolBar();
-    Label lab = new Label(name);
-    Button addButton = new Button("Add");
-    bar.getItems().add(lab);
-    bar.getItems().add(addButton);
+        // test the look and feel with both Caspian and Modena
+        Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+        DockPane.initializeDefaultUserAgentStylesheet();
+    }
 
-    DockPane dp = new DockPane();
-    VBox.setVgrow(dp, Priority.ALWAYS);
+    private DockPane makeDockPane(String name) {
+        ToolBar bar = new ToolBar();
+        Label lab = new Label(name);
+        Button addButton = new Button("Add");
+        bar.getItems().add(lab);
+        bar.getItems().add(addButton);
 
-    addButton.setOnAction(evt -> addNode(dp, name));
+        DockPane dp = new DockPane();
+        VBox.setVgrow(dp, Priority.ALWAYS);
 
-    vbox.getChildren().add(bar);
-    vbox.getChildren().add(dp);
+        addButton.setOnAction(evt -> addNode(dp, name));
 
-    return dp;
-  }
+        vbox.getChildren().add(bar);
+        vbox.getChildren().add(dp);
 
-  private void addNode(DockPane dp, String dockName) {
-    int n = ++counter;
-    String title = dockName + "Node " + counter;
-    TextArea ta = new TextArea();
-    ta.setText(title + "\n\nJust some test data"); 
-    DockNode dn = new DockNode(ta, title, new ImageView(dockImage));
-    dn.dock(dp, DockPos.BOTTOM);
-  }
+        return dp;
+    }
 
+    private void addNode(DockPane dp, String dockName) {
+        int n = ++counter;
+        String title = dockName + "Node " + counter;
+        TextArea ta = new TextArea();
+        ta.setText(title + "\n\nJust some test data");
+        DockNode dn = new DockNode(ta, title, new ImageView(dockImage));
+        dn.dock(dp, DockPos.BOTTOM);
+    }
 
 }

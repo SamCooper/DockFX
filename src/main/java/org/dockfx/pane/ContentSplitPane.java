@@ -93,7 +93,7 @@ public class ContentSplitPane extends SplitPane implements ContentPane {
             } else if (children.get(i) instanceof ContentPane) {
                 pane = (ContentPane) children.get(i);
                 if (pane.removeNode(stack, node)) {
-                    if (pane.getChildrenList().size() < 1) {
+                    if (pane.getChildrenList().isEmpty()) {
                         getItems().remove(i);
                         return true;
                     } else if (pane.getChildrenList().size() == 1

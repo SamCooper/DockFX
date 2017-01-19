@@ -253,7 +253,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
     public final boolean isMaximized() {
         return maximizedProperty.get();
     }
-   private BooleanProperty minimizedProperty = new SimpleBooleanProperty(false) {
+    private BooleanProperty minimizedProperty = new SimpleBooleanProperty(false) {
         @Override
         public String getName() {
             return "minimized";
@@ -447,21 +447,20 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
      * Creates a new DockPane adding event handlers for dock events and creating the indicator
      * overlays.
      */
-    public DockPane() {
-        this(null);
+    public DockPane(Stage stage) {
+        this(stage, null);
     }
 
-    protected DockPane(DockPane parentDockPane) {
+    protected DockPane(Stage stage, DockPane parentDockPane) {
         super();
 
+        this.stage = stage;
         this.parentDockPane = parentDockPane;
 
         this.addEventHandler(DockEvent.ANY, this);
         this.addEventFilter(DockEvent.ANY, new EventHandler<DockEvent>() {
-
             @Override
             public void handle(DockEvent event) {
-
                 if (event.getEventType() == DockEvent.DOCK_ENTER) {
                     DockPane.this.receivedEnter = true;
                 } else if (event.getEventType() == DockEvent.DOCK_OVER) {
@@ -730,9 +729,8 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
      * with its layout bounds inside the dock pane when it becomes detached. Can be null indicating
      * no translation.
      */
-    public void setFloating(Region content, Point2D translation, boolean absolutePosition) {
+    protected void setFloating(Region content, Point2D translation, boolean absolutePosition) {
         // setup window stage
-        stage = new Stage();
         Stage parentStage = null;
         if (parentDockPane != null && parentDockPane.getStage() != null) {
             parentStage = parentDockPane.getStage();
@@ -1425,7 +1423,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
         for (Object item : contents.get("_FloatingNodes").getChildren()) {
             ContentHolder holder = (ContentHolder) item;
 
-            DockPane floatingPane = new DockPane(this);
+            DockPane floatingPane = new DockPane(new Stage(), this);
             Control newRoot = (Control) buildPane(this, floatingPane, null,
                     holder, dockNodes, delayOpenHandler);
 

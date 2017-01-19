@@ -160,14 +160,25 @@ public class DockNodeTitleBar extends DockTitleBar {
                 return;
             }
 
-            Stage stage = dockNode.getStage();
-            Insets insetsDelta = dockNode.getDockPane().getBorderPane().getInsets();
+            // it is possible that drag start has not been set if some other node had focus when
+            // we started the drag
+            if (null == dockNode.getStage() || !dockNode.getDockPane().isOnlyChild(dockNode)) {
+                if (!dockNode.isCustomTitleBar() && dockNode.isDecorated()) {
+                    dockNode.setFloating(true, new Point2D(0, DockNodeTitleBar.this.getHeight()), null);
+                } else {
+                    dockNode.setFloating(true);
+                }
+            }
 
             // it is possible that drag start has not been set if some other node had focus when
             // we started the drag
             if (null == dragStart) {
                 dragStart = new Point2D(event.getX(), event.getY());
             }
+
+            Stage stage = dockNode.getStage();
+
+            Insets insetsDelta = dockNode.getDockPane().getBorderPane().getInsets();
 
             // dragging this way makes the interface more responsive in the event
             // the system is lagging as is the case with most current JavaFX

@@ -297,7 +297,7 @@ public class DockNode extends VBox {
                 }
 
                 // need a new DockPane to contain us
-                setDockPane(new DockPane(parentDockPane));
+                setDockPane(new DockPane(new Stage(), parentDockPane));
 
                 dockPane.floatNode(this);
                 dockPane.setFloating(this, translation, false);
@@ -520,7 +520,6 @@ public class DockNode extends VBox {
     public final void setClosable(boolean closable) {
         this.closableProperty.set(closable);
     }
-
 
     public final boolean isDecorated() {
         return dockPane.getStageStyle() != StageStyle.TRANSPARENT

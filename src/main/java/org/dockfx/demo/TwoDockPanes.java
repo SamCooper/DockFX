@@ -67,8 +67,8 @@ public class TwoDockPanes extends Application {
 
         vbox = new VBox();
 
-        dp1 = makeDockPane("A");
-        dp2 = makeDockPane("B");
+        dp1 = makeDockPane(primaryStage, "A");
+        dp2 = makeDockPane(primaryStage, "B");
 
         dp1.setExclusive(true);
 
@@ -81,14 +81,14 @@ public class TwoDockPanes extends Application {
         DockPane.initializeDefaultUserAgentStylesheet();
     }
 
-    private DockPane makeDockPane(String name) {
+    private DockPane makeDockPane(Stage stage, String name) {
         ToolBar bar = new ToolBar();
         Label lab = new Label(name);
         Button addButton = new Button("Add");
         bar.getItems().add(lab);
         bar.getItems().add(addButton);
 
-        DockPane dp = new DockPane();
+        DockPane dp = new DockPane(stage);
         VBox.setVgrow(dp, Priority.ALWAYS);
 
         addButton.setOnAction(evt -> addNode(dp, name));

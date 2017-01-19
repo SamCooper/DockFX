@@ -446,6 +446,9 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
     /**
      * Creates a new DockPane adding event handlers for dock events and creating the indicator
      * overlays.
+     *
+     * @param stage The stage that this DockPane uses, should be a top level stage.
+     * @throws NullPointerException if stage is null;
      */
     public DockPane(Stage stage) {
         this(stage, null);
@@ -453,6 +456,10 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
 
     protected DockPane(Stage stage, DockPane parentDockPane) {
         super();
+
+        if (null == stage) {
+            throw new NullPointerException("Stage argument must not be null");
+        }
 
         this.stage = stage;
         this.parentDockPane = parentDockPane;
@@ -732,9 +739,20 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
     protected void setFloating(Region content, Point2D translation, boolean absolutePosition) {
         // setup window stage
         Stage parentStage = null;
-        if (parentDockPane != null && parentDockPane.getStage() != null) {
-            parentStage = parentDockPane.getStage();
-            stage.initOwner(parentStage);
+
+        // need to find highest stage, this *should* be the primary application stage
+        if (null != parentDockPane) {
+            DockPane pp = parentDockPane;
+            while (null != pp.parentDockPane) {
+                pp = pp.parentDockPane;
+            }
+
+            parentStage = pp.getStage();
+
+            // this should never be null and *should* be the primary stage
+            if (null != parentStage) {
+                stage.initOwner(parentStage);
+            }
         }
 
         stage.initStyle(stageStyle);

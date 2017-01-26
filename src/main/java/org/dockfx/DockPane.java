@@ -1074,6 +1074,9 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
             if (null != newOnlyChild) {
                 dockTitleBar.mirrorNodeTitleBar(null, newOnlyChild);
             }
+
+            stage.sizeToScene();
+            stage.setMinHeight(borderPane.minHeight(this.getMinWidth()));
         }
     }
 
@@ -1140,6 +1143,9 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
                 onlyChild.showTitleBar(false);
                 dockTitleBar.mirrorNodeTitleBar(node, onlyChild);
             }
+
+            stage.sizeToScene();
+            stage.setMinHeight(borderPane.minHeight(this.getMinWidth()));
         }
     }
 

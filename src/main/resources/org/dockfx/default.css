@@ -111,8 +111,8 @@
 
 .dock-node-border {
   -fx-padding: 5;
-  -fx-background-color: LightGray;
-  -fx-effect: dropshadow( three-pass-box, rgba(0,0,0,0.4), 10,0.2,0,0 );
+  -fx-background-color: transparent;
+  -fx-effect: dropshadow( three-pass-box, rgba(10,10,10,0.3), 120,0.2,0,0 );
 }
 
 .dock-node-border:maximized {

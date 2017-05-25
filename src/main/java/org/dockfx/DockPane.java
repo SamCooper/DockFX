@@ -464,6 +464,16 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
         this.stage = stage;
         this.parentDockPane = parentDockPane;
 
+        if (null != parentDockPane) {
+            // bind our title to theirs
+            try {
+                titleProperty.bind(parentDockPane.titleProperty());
+            }
+            catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        }
+
         this.addEventHandler(DockEvent.ANY, this);
         this.addEventFilter(DockEvent.ANY, new EventHandler<DockEvent>() {
             @Override
@@ -1288,7 +1298,10 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
 
         for (DockPane floatingPane : floatingDockPanes) {
             ContentHolder floatingNode = checkPane(floatingPane.root);
-            floatingNode.addProperty("Title", floatingPane.getTitle());
+
+            if (!floatingPane.titleProperty().isBound()) {
+                floatingNode.addProperty("Title", floatingPane.getTitle());
+            }
 
             floatingNode.addProperty("Position", new Double[]{
                 floatingPane.getStage().getX(),
@@ -1455,7 +1468,10 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
             floatingPane.getChildren().add(newRoot);
 
             String title = holder.getProperties().getProperty("Title");
-            floatingPane.setTitle(title);
+            if (null != title) {
+                floatingPane.titleProperty().unbind();
+                floatingPane.setTitle(title);
+            }
 
             DockNode onlyChild = floatingPane.getOnlyChild();
             if (null != onlyChild) {

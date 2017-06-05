@@ -20,6 +20,7 @@
  */
 package org.dockfx;
 
+import com.sun.javafx.css.StyleManager;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -27,22 +28,12 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-
-import com.sun.javafx.css.StyleManager;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import javafx.stage.Stage;
-
-import org.dockfx.pane.ContentPane;
-import org.dockfx.pane.ContentSplitPane;
-import org.dockfx.pane.ContentTabPane;
-import org.dockfx.pane.DockNodeTab;
-
+import java.util.Stack;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -76,9 +67,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import org.dockfx.pane.ContentPane;
+import org.dockfx.pane.ContentSplitPane;
+import org.dockfx.pane.ContentTabPane;
+import org.dockfx.pane.DockNodeTab;
 
 /**
  * Base class for a dock pane that provides the layout of the dock nodes. Stacking the dock nodes to
@@ -1507,7 +1503,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
         }
     }
 
-    private static Node buildPane(DockPane oldPane, DockPane newPane, ContentPane containerPane,
+    private Node buildPane(DockPane oldPane, DockPane newPane, ContentPane containerPane,
             ContentHolder holder, HashMap<String, DockNode> dockNodes,
             DelayOpenHandler delayOpenHandler) {
         Node rv = null;
@@ -1517,7 +1513,6 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
                 ContentSplitPane splitPane = new ContentSplitPane();
                 splitPane.setContentParent(containerPane);
                 splitPane.setOrientation((Orientation) holder.getProperties().get("Orientation"));
-                splitPane.setDividerPositions((double[]) holder.getProperties().get("DividerPositions"));
 
                 for (Object item : holder.getChildren()) {
                     // Call this function recursively
@@ -1525,6 +1520,8 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
                             (ContentHolder) item, dockNodes, delayOpenHandler));
                 }
 
+                stage.onShownProperty()
+                    .addListener((l, o, n) -> splitPane.setDividerPositions((double[]) holder.getProperties().get("DividerPositions")));
                 rv = splitPane;
             }
             break;

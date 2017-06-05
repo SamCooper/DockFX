@@ -1483,7 +1483,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
             floatingPane.stage.setMinWidth(msize[0]);
             floatingPane.stage.setMinHeight(msize[1]);
 
-            floatingPane.queueOnShow((e) -> {
+            floatingPane.queueOnShow(e -> {
                 floatingPane.stage.setWidth(size[0]);
                 floatingPane.stage.setHeight(size[1]);
             });
@@ -1520,8 +1520,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
                             (ContentHolder) item, dockNodes, delayOpenHandler));
                 }
 
-                stage.onShownProperty()
-                    .addListener((l, o, n) -> splitPane.setDividerPositions((double[]) holder.getProperties().get("DividerPositions")));
+                queueOnShow(e -> splitPane.setDividerPositions((double[]) holder.getProperties().get("DividerPositions")));
                 rv = splitPane;
             }
             break;

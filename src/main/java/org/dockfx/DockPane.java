@@ -859,23 +859,22 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
         // if we a child of the primary stage and its not been shown yet then we must wait before
         // showing ourselves otherwise we will not be a child stage
         if (absolutePosition && parentStage != null && !parentStage.isShowing()) {
-            queueOnShow((e) -> stage.show());
+            queueOnShow(stage::show);
         } else {
             stage.show();
         }
     }
 
-    private final Stack<EventHandler<WindowEvent>> onShowQueue = new Stack<>();
-    private EventHandler<WindowEvent> defaultOnShow;
+    private final Stack<Runnable> onShowQueue = new Stack<>();
 
-    private void queueOnShow(EventHandler<WindowEvent> value) {
+    private void queueOnShow(Runnable value) {
         if (null != parentDockPane) {
             parentDockPane.queueOnShow(value);
         } else {
             if (onShowQueue.isEmpty()) {
-                defaultOnShow = stage.getOnShown();
-                stage.setOnShown((e) -> {
-                    onShowQueue.forEach((a) -> a.handle(e));
+                EventHandler<WindowEvent> defaultOnShow = stage.getOnShown();
+                stage.setOnShown(e -> {
+                    onShowQueue.forEach(Runnable::run);
                     if (null != defaultOnShow) {
                         stage.setOnShown(defaultOnShow);
                         defaultOnShow.handle(e);
@@ -883,6 +882,9 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
                 });
             }
             onShowQueue.push(value);
+            if (stage.isShowing()) {
+                value.run();
+            }
         }
     }
 
@@ -1483,7 +1485,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
             floatingPane.stage.setMinWidth(msize[0]);
             floatingPane.stage.setMinHeight(msize[1]);
 
-            floatingPane.queueOnShow(e -> {
+            floatingPane.queueOnShow(() -> {
                 floatingPane.stage.setWidth(size[0]);
                 floatingPane.stage.setHeight(size[1]);
             });
@@ -1520,7 +1522,7 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
                             (ContentHolder) item, dockNodes, delayOpenHandler));
                 }
 
-                queueOnShow(e -> splitPane.setDividerPositions((double[]) holder.getProperties().get("DividerPositions")));
+                queueOnShow(() -> splitPane.setDividerPositions((double[]) holder.getProperties().get("DividerPositions")));
                 rv = splitPane;
             }
             break;
